@@ -68,7 +68,6 @@ export function InputBox() {
         });
       })
       .catch((error) => dispatch({ type: "failure", error }));
-    console.log(data);
     setQuery(false);
   }, [query]);
 
