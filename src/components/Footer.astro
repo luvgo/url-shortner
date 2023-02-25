@@ -1,0 +1,16 @@
+---
+export interface Props {
+  gitHub: string;
+  linkedIn: string;
+}
+
+const { gitHub, linkedIn } = Astro.props;
+---
+
+<footer class="sticky bottom-0">
+  <div class="flex bg-purple-500 p-5">
+    <p>My Personal Information:</p>
+    <a class="px-3 underline hover:text-blue-600" href={gitHub}>github</a>
+    <a class="underline hover:text-blue-500" href={linkedIn}>linkedIn</a>
+  </div>
+</footer>

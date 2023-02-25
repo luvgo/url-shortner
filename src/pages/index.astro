@@ -1,0 +1,18 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { InputBox } from "../components/UrlShortener";
+import Footer from "../components/Footer.astro";
+---
+
+<Layout title="url-shortener">
+  <main>
+    <div class="grid place-items-center h-screen content-center">
+      <InputBox client:load />
+    </div>
+    <Footer
+      gitHub="https://github.com/luvgo"
+      linkedIn="https://github.com/luvgo"
+      client:visible
+    />
+  </main>
+</Layout>
