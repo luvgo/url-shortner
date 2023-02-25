@@ -8,7 +8,11 @@ dist/
 node_modules/
 
 # vscode 
+<<<<<<< HEAD
 .vscode/
+=======
+.vscode
+>>>>>>> origin/main
 
 # logs
 npm-debug.log*

@@ -94,7 +94,7 @@ export function InputBox() {
           onChange={(e) => setInput(e.target.value)}
         />
         <button
-          className="bg-purple-600 shadow hover:bg-purple-500 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded"
+         className="shadow hover:bg-purple-500 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded"
           type="button"
           onClick={(e) => handleSubmit(e, input)}
         >
