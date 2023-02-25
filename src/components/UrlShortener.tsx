@@ -27,7 +27,6 @@ async function createShortUrl(url: string) {
       custom: "ShortUrl",
       useFallback: true,
     });
-    console.log(data[0]);
     return data[0];
   } catch (error) {
     console.error(error);
@@ -59,7 +58,7 @@ export function InputBox() {
     dispatch({ type: "request" });
     createShortUrl(url)
       .then((response) => {
-        console.log(response);
+        console.log("response: " + response);
         dispatch({
           type: "success",
           result: {
@@ -94,7 +93,7 @@ export function InputBox() {
           onChange={(e) => setInput(e.target.value)}
         />
         <button
-         className="shadow hover:bg-purple-500 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded"
+          className="shadow hover:bg-purple-500 bg-purple-600 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded"
           type="button"
           onClick={(e) => handleSubmit(e, input)}
         >
@@ -123,6 +122,7 @@ export function InputBox() {
           <span className="sr-only">Loading...</span>
         </div>
       )}
+      {hasShortUrl && <p>{data?.link}</p>}
     </div>
   );
 }
