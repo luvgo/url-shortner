@@ -7,8 +7,10 @@ export interface Props {
 const { github, linkedIn } = Astro.props;
 ---
 
-<footer class="sticky bottom-0">
-  <div class="flex bg-purple-600 p-5">
+<footer
+  class="absolute w-full bottom-0 bg-gradient-to-r from-rose-400 via-fuchsia-500 to-indigo-500"
+>
+  <div class="flex p-5">
     <p>Personal Information:</p>
     <div class="px-1"></div>
     <a class="underline hover:text-blue-600" href={github}>github</a>

@@ -2,14 +2,13 @@
 import Layout from "../layouts/Layout.astro";
 import { InputBox } from "../components/UrlShortener";
 import Footer from "../components/Footer.astro";
-import { List } from "../components/UrlList";
+import Heading from "../components/Heading.astro";
 ---
 
 <Layout title="url-shortener">
-  <main>
-    <div
-      class="grid place-items-center h-screen content-center sm:col-auto md:row-auto"
-    >
+  <main class="h-screen">
+    <Heading />
+    <div class="flex justify-center">
       <InputBox client:load />
     </div>
     <Footer

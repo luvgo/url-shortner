@@ -1,36 +1,19 @@
 import { useReducer, useState } from "react";
 import gotiny from "gotiny";
+import toast, { Toaster } from "react-hot-toast";
 
 type State = {
-  data?: Data[];
+  data?: urlData;
   isLoading: boolean;
   error?: Error;
 };
 
-export type Data = {
-  longUrl?: string;
-  code?: string;
-  tiny?: string;
-  link?: string;
-};
+type urlData = { shortUrl: string; longUrl: string };
 
 type Action =
   | { type: "request" }
-  | { type: "success"; result: Data }
+  | { type: "success"; result: urlData }
   | { type: "failure"; error: Error };
-
-async function createShortUrl(url: string) {
-  try {
-    const data = await gotiny.set({
-      long: url,
-      custom: "ShortUrl",
-      useFallback: true,
-    });
-    return data[0];
-  } catch (error) {
-    console.error(error);
-  }
-}
 
 function reducer(state: State, action: Action): State {
   switch (action.type) {
@@ -39,20 +22,38 @@ function reducer(state: State, action: Action): State {
     case "success":
       return {
         isLoading: false,
-        data: state.data ? [...state.data, action.result] : [action.result],
+        data: action.result,
       };
     case "failure":
       return { isLoading: false, error: action.error };
   }
 }
 
-function UrlData({ longUrl, tiny, link, code }: Data) {
+function UrlData(props: urlData) {
   return (
-    <div className="bg-slate-400">
-      <p>{longUrl}</p>
-      <p>{tiny}</p>
-      <p>{link}</p>
-      <p>{code}</p>
+    <div className="text-white py-2 text-center align-middle">
+      <Toaster />
+      <button
+        className="p-2 bg-blue-600 max-sm:text-left w-full rounded-md hover:bg-blue-500"
+        type="button"
+        onClick={() => {
+          toast.success("Coppied to Clipboard!");
+          navigator.clipboard.writeText(props.shortUrl);
+        }}
+      >
+        tiny-url: {props.shortUrl}
+      </button>
+      <div className="p-1" />
+      <button
+        className="overflow-ellipsis p-2 w-full max-sm:text-left bg-green-700 rounded-md hover:bg-green-600"
+        type="button"
+        onClick={() => {
+          toast.success("Coppied to Clipboard!");
+          navigator.clipboard.writeText(props.longUrl);
+        }}
+      >
+        original-url: {props.longUrl}
+      </button>
     </div>
   );
 }
@@ -61,46 +62,43 @@ export function InputBox() {
   const [input, setInput] = useState("");
 
   const [{ data, isLoading, error }, dispatch] = useReducer(reducer, {
-    data: [{ longUrl: input, code: "", tiny: "", link: "" }],
     isLoading: false,
   });
 
-  function handleSubmit(e, url: string) {
+  async function handleSubmit(e: any, url: string) {
     e.preventDefault();
-
     dispatch({ type: "request" });
-    createShortUrl(url)
-      .then((response) => {
-        dispatch({
-          type: "success",
-          result: {
-            longUrl: response?.long,
-            code: response?.code,
-            tiny: response?.tiny,
-            link: response?.link,
-          },
-        });
-      })
-      .catch((error: Error) => {
-        dispatch({ type: "failure", error });
+    try {
+      const data = await gotiny.set({
+        long: url,
       });
+      dispatch({
+        type: "success",
+        result: {
+          shortUrl: data[0].tiny,
+          longUrl: data[0].long,
+        },
+      });
+    } catch (error: any) {
+      dispatch({ type: "failure", error: new Error(error) });
+    }
   }
 
   return (
-    <div className="p-5 flex justify-center">
+    <div>
       <form>
         <label
-          className="block text-gray-700 text-sm font-bold "
+          className="block text-gray-800 text-sm font-bold "
           htmlFor="input"
         >
           Input
         </label>
         <input
           type="text"
-          placeholder="Input Url"
+          placeholder={error ? "Input is Incorrect" : "Input Url"}
           className="shadow appearance-none sm:min-w-max md:w-96 border rounded py-2 px-3 text-gray-700 leading-tight truncate my-2 mr-4 focus:outline-none focus:shadow-outline"
-          value={input}
           id="input"
+          value={input}
           onChange={(e) => setInput(e.target.value)}
         />
         {isLoading ? (
@@ -125,25 +123,20 @@ export function InputBox() {
           </div>
         ) : (
           <button
-            className="shadow hover:bg-purple-500 bg-purple-600 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded"
-            type="button"
-            onClick={(e) => handleSubmit(e, input)}
+            className="shadow hover:bg-purple-500 dark:bg-purple-600 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded"
+            type="reset"
+            onClick={(e) => {
+              handleSubmit(e, input);
+              setInput("");
+            }}
           >
             Submit
           </button>
         )}
       </form>
-      <div>
-        {data &&
-          data.map((item) => (
-            <UrlData
-              longUrl={item.longUrl}
-              link={item.link}
-              code={item.code}
-              tiny={item.tiny}
-            />
-          ))}
-      </div>
+      {data ? (
+        <UrlData shortUrl={data.shortUrl} longUrl={data.longUrl} />
+      ) : null}
     </div>
   );
 }
