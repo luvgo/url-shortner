@@ -32,7 +32,6 @@ function reducer(state: State, action: Action): State {
 function UrlData(props: urlData) {
   return (
     <div className="text-white py-2 text-center align-middle">
-      <Toaster />
       <button
         className="p-2 bg-blue-600 max-sm:text-left w-full rounded-md hover:bg-blue-500"
         type="button"
@@ -75,17 +74,19 @@ export function InputBox() {
       dispatch({
         type: "success",
         result: {
-          shortUrl: data[0].tiny,
+          shortUrl: data[0].link,
           longUrl: data[0].long,
         },
       });
     } catch (error: any) {
+      toast.error("Invalid Input");
       dispatch({ type: "failure", error: new Error(error) });
     }
   }
 
   return (
     <div>
+      <Toaster />
       <form>
         <label
           className="block text-gray-800 text-sm font-bold "
